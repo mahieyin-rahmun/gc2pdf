@@ -1,6 +1,6 @@
 import { NextApiResponse } from "next";
 import TokenService from "../services/token.service";
-import { AuthenticatedNextApiRequest } from "../types/types";
+import { AuthenticatedNextApiRequest } from "../../types/types";
 
 export default async function (
   req: AuthenticatedNextApiRequest,

@@ -10,3 +10,13 @@ export type AuthenticatedNextApiRequest = {
 export type TSessionProps = {
   session: Session;
 };
+
+export type TGoogleCalendarItem = {
+  kind: string;
+  etag: string;
+  id: string;
+  summary: string;
+  timezone: string;
+  backgroundColor: string;
+  foregroundColor: string;
+};

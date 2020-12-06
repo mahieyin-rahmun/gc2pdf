@@ -1,5 +1,5 @@
-import { TSessionProps } from "../types/types";
-import { signIn, useSession } from "next-auth/client";
+import { TSessionProps } from "../../types/types";
+import { signIn, signOut, useSession } from "next-auth/client";
 import React from "react";
 
 export function withAuth<P extends Record<string, any>>(
@@ -23,6 +23,11 @@ export function withAuth<P extends Record<string, any>>(
       );
     }
 
-    return <Component session={session} {...props} />;
+    return (
+      <>
+        <button onClick={() => signOut()}>Sign Out</button>
+        <Component session={session} {...props} />
+      </>
+    );
   };
 }

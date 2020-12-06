@@ -1,7 +1,7 @@
 import { NextApiResponse } from "next";
-import GoogleCalendarService from "../../services/calendar.service";
+import GoogleCalendarService from "../../server/services/calendar.service";
 import nextConnect from "next-connect";
-import checkAuth from "../../middleware/auth.middleware";
+import checkAuth from "../../server/middleware/auth.middleware";
 import { AuthenticatedNextApiRequest } from "../../types/types";
 
 const handler = nextConnect<AuthenticatedNextApiRequest, NextApiResponse>();
