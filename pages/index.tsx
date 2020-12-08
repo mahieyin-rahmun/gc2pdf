@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
+import CalendarItem from "../client/components/CalendarItem";
 import { withAuth } from "../client/hocs/HOC";
 import { TGoogleCalendarItem, TSessionProps } from "../types/types";
 
@@ -28,9 +29,10 @@ function Home(props: TSessionProps) {
       </Head>
       <div>
         <p>Welcome, {session.user.email}</p>
-        <pre>
-          {calendarItems.length > 0 && JSON.stringify(calendarItems, null, 2)}
-        </pre>
+        {calendarItems.length > 0 &&
+          calendarItems.map((calendarItem) => (
+            <CalendarItem calendarItem={calendarItem} key={calendarItem.etag} />
+          ))}
       </div>
     </>
   );
