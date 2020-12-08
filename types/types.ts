@@ -20,3 +20,23 @@ export type TGoogleCalendarItem = {
   backgroundColor: string;
   foregroundColor: string;
 };
+
+type DateTimeObject = {
+  dateTime: string;
+};
+
+type Attendees = {
+  email: string;
+  organizer?: boolean;
+  self?: boolean;
+  responseStatus: "accepted" | "tentative" | "declined" | "needsAction";
+};
+
+export type TGoogleCalendarEvent = Partial<{
+  id: string;
+  attendees: Attendees[];
+  start: DateTimeObject;
+  end: DateTimeObject;
+  summary: string;
+  hangoutLink: string;
+}>;
