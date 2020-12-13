@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from "axios";
-import TokenService from "./token.service";
 
 export default class GoogleCalendarService {
   private URL_MAP = {
