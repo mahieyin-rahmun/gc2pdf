@@ -3,6 +3,7 @@ import GoogleCalendarService from "../../server/services/calendar.service";
 import nextConnect from "next-connect";
 import checkAuth from "../../server/middleware/auth.middleware";
 import { AuthenticatedNextApiRequest } from "../../types/types";
+import { constructJsonResponse } from "../../server/utils";
 
 const handler = nextConnect<AuthenticatedNextApiRequest, NextApiResponse>();
 handler.use(checkAuth).get(async (req, res) => {
@@ -18,7 +19,7 @@ handler.use(checkAuth).get(async (req, res) => {
     timeMax,
   );
 
-  return res.json(eventsList);
+  return constructJsonResponse(res, 200, "success", eventsList);
 });
 
 export default handler;
