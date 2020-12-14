@@ -10,8 +10,6 @@ function CalendarEvent(props: TCalendarEventProps) {
     calendarEvent: { attendees, summary, start, end, hangoutLink },
   } = props;
 
-  console.log(props);
-
   return (
     <div>
       <hr />
