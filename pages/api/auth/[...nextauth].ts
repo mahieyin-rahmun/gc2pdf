@@ -22,11 +22,12 @@ const options: NextAuthOptions = {
   secret: process.env.SESSION_SECRET,
   session: {
     jwt: true,
-    maxAge: 7 * 24 * 60 * 60, // 7 days
+    maxAge: 1 * 60 * 60, // 1 hour
   },
   jwt: {
     secret: process.env.JWT_SECRET,
   },
+  debug: process.env.NODE_ENV === "development",
   callbacks: {
     jwt: async function (token, user: TUser, account, profile, isNewUser) {
       if (user) {
@@ -35,7 +36,8 @@ const options: NextAuthOptions = {
           ...token,
           accessToken: account.accessToken,
           refreshToken: account.refreshToken,
-          exp: Date.now() + (account.expires_in as number),
+          // extract expires_in for use in auth middleware
+          expires_in: account["expires_in"] as number,
         };
       }
 
