@@ -25,7 +25,7 @@ type DateTimeObject = {
   dateTime: string;
 };
 
-type Attendees = {
+export type Attendees = {
   email: string;
   organizer?: boolean;
   self?: boolean;
