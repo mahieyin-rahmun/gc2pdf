@@ -1,11 +1,13 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import CalendarEvent from "../../client/components/CalendarEvent";
+import React, { useEffect, useRef, useState } from "react";
+import CalendarEventTable from "../../client/components/CalendarEventTable";
 import { withAuth } from "../../client/hocs/HOC";
 import { TGoogleCalendarEvent, TSessionProps } from "../../types/types";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import LuxonUtils from "@date-io/luxon";
+import ReactToPrint from "react-to-print";
+import { DateTime } from "luxon";
 
 type TCalendarEventsProps = TSessionProps & Record<string, any>;
 
@@ -31,6 +33,7 @@ function ISODateString(d: Date) {
 
 function CalendarEvents(props: TCalendarEventsProps) {
   const router = useRouter();
+  const tableRef = useRef();
   const [calendarEvents, setCalendarEvents] = useState<{
     summary: string;
     items: TGoogleCalendarEvent[];
@@ -43,9 +46,6 @@ function CalendarEvents(props: TCalendarEventsProps) {
   const [fetchingCalendarEvents, setFetchingCalendarEvents] = useState<boolean>(
     false,
   );
-
-  const { session } = props;
-  const calendarId = router.query["calendarId"];
 
   useEffect(() => {
     const currentDate = timeMax;
@@ -66,11 +66,13 @@ function CalendarEvents(props: TCalendarEventsProps) {
     }
   }, [timeMin, timeMax]);
 
-  const handleMinDateChange = ({ ts }) => {
+  const calendarId = router.query["calendarId"];
+
+  const handleMinDateChange = ({ ts }: DateTime) => {
     setTimeMin(new Date(ts));
   };
 
-  const handleMaxDateChange = ({ ts }) => {
+  const handleMaxDateChange = ({ ts }: DateTime) => {
     setTimeMax(new Date(ts));
   };
 
@@ -126,14 +128,16 @@ function CalendarEvents(props: TCalendarEventsProps) {
       >
         Fetch Calendar Events
       </button>
+      <ReactToPrint
+        trigger={() => <button>Generate PDF</button>}
+        content={() => tableRef.current}
+      />
       <hr />
-      {calendarEvents &&
-        fetchError.length === 0 &&
-        calendarEvents.items &&
-        calendarEvents.items.length > 0 &&
-        calendarEvents.items.map((calendarEvent) => (
-          <CalendarEvent calendarEvent={calendarEvent} key={calendarEvent.id} />
-        ))}
+      <CalendarEventTable
+        ref={tableRef}
+        calendarEvents={calendarEvents}
+        fetchError={fetchError}
+      />
     </div>
   );
 }
