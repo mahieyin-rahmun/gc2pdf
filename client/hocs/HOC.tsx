@@ -16,7 +16,7 @@ export function withAuth<P extends Record<string, any>>(
       return (
         <>
           <h2>You don't seem to be logged in</h2>
-          <button onClick={() => signIn()}>
+          <button onClick={() => signIn("google")}>
             Sign In To Your Google Account
           </button>
         </>
