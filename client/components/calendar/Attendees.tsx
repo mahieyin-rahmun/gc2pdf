@@ -1,6 +1,6 @@
 import { Typography } from "@material-ui/core";
 import React from "react";
-import { Attendees as TAttendees } from "../../types/types";
+import { Attendees as TAttendees } from "../../../types/types";
 
 type TAttendeesProps = Pick<TAttendees, "email" | "responseStatus">;
 
