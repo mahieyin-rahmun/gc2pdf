@@ -1,6 +1,8 @@
 import { TSessionProps } from "../../types/types";
 import { signIn, signOut, useSession } from "next-auth/client";
 import React from "react";
+import Layout from "../components/layout/Layout";
+import AccessDenied from "../components/auth/AccessDenied";
 
 export function withAuth<P extends Record<string, any>>(
   Component: React.ComponentType<P>,
@@ -14,20 +16,16 @@ export function withAuth<P extends Record<string, any>>(
 
     if (!loading && !session) {
       return (
-        <>
-          <h2>You don't seem to be logged in</h2>
-          <button onClick={() => signIn("google")}>
-            Sign In To Your Google Account
-          </button>
-        </>
+        <Layout>
+          <AccessDenied />
+        </Layout>
       );
     }
 
     return (
-      <>
-        <button onClick={() => signOut()}>Sign Out</button>
+      <Layout>
         <Component session={session} {...props} />
-      </>
+      </Layout>
     );
   };
 }

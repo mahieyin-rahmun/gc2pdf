@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
-import CalendarEventTable from "../../client/components/CalendarEventTable";
+import CalendarEventTable from "../../client/components/calendar/CalendarEventTable";
 import { withAuth } from "../../client/hocs/HOC";
 import { TGoogleCalendarEvent, TSessionProps } from "../../types/types";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
