@@ -1,7 +1,6 @@
-import { TableCell, TableRow, Typography } from "@material-ui/core";
-import { useSession } from "next-auth/client";
+import { TableCell, TableRow, Typography, Link } from "@material-ui/core";
 import React from "react";
-import { TGoogleCalendarEvent } from "../../types/types";
+import { TGoogleCalendarEvent } from "../../../types/types";
 import Attendees from "./Attendees";
 
 type TCalendarEventProps = {
@@ -40,7 +39,9 @@ function CalendarEvent(props: TCalendarEventProps) {
       <TableCell align="left">{date}</TableCell>
       <TableCell align="left">{startTime}</TableCell>
       <TableCell align="left">{endTime}</TableCell>
-      <TableCell align="left">{hangoutLink}</TableCell>
+      <TableCell align="left">
+        <Link href={hangoutLink}>{hangoutLink}</Link>
+      </TableCell>
       <TableCell>
         {attendees && attendees.length && attendees.length > 0 ? (
           attendees.map((attendants) => {

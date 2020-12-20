@@ -11,7 +11,7 @@ import {
   createStyles,
 } from "@material-ui/core";
 import React, { PureComponent } from "react";
-import { TGoogleCalendarEvent } from "../../types/types";
+import { TGoogleCalendarEvent } from "../../../types/types";
 import CalendarEvent from "./CalendarEvent";
 
 const styles = createStyles({
