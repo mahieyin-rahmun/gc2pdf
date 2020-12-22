@@ -55,6 +55,9 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyItems: "center",
     },
+    button: {
+      marginBottom: theme.spacing(2),
+    },
   }),
 );
 
@@ -168,7 +171,11 @@ function CalendarEvents(props: TCalendarEventsProps) {
       {calendarEvents && (
         <div className={classes.events}>
           <ReactToPrint
-            trigger={() => <Button variant="outlined">Generate PDF</Button>}
+            trigger={() => (
+              <Button variant="outlined" className={classes.button}>
+                Generate PDF
+              </Button>
+            )}
             content={() => tableRef.current}
           />
           <CalendarEventTable

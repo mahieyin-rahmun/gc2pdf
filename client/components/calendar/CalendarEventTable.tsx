@@ -13,6 +13,7 @@ import {
 import React, { PureComponent } from "react";
 import { TGoogleCalendarEvent } from "../../../types/types";
 import CalendarEvent from "./CalendarEvent";
+import StyledTableCell from "./StyledTableCell";
 
 const styles = createStyles({
   table: {
@@ -43,12 +44,12 @@ class CalendarEventTable extends PureComponent<TCalendarEventTableProps, {}> {
           >
             <TableHead>
               <TableRow>
-                <TableCell>Title/Summary</TableCell>
-                <TableCell align="left">Date and Day</TableCell>
-                <TableCell align="left">Start Time</TableCell>
-                <TableCell align="left">End Time</TableCell>
-                <TableCell align="left">Google Meet Link</TableCell>
-                <TableCell align="left">Attendees</TableCell>
+                <StyledTableCell>Title/Summary</StyledTableCell>
+                <StyledTableCell align="left">Date and Day</StyledTableCell>
+                <StyledTableCell align="left">Start Time</StyledTableCell>
+                <StyledTableCell align="left">End Time</StyledTableCell>
+                <StyledTableCell align="left">Google Meet Link</StyledTableCell>
+                <StyledTableCell align="left">Attendees</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>

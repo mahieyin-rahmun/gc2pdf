@@ -2,6 +2,7 @@ import { TableCell, TableRow, Typography, Link } from "@material-ui/core";
 import React from "react";
 import { TGoogleCalendarEvent } from "../../../types/types";
 import Attendees from "./Attendees";
+import StyledTableRow from "./StyledTableRow";
 
 type TCalendarEventProps = {
   calendarEvent: TGoogleCalendarEvent;
@@ -34,7 +35,7 @@ function CalendarEvent(props: TCalendarEventProps) {
   const endTime = timeFormat.format(new Date(end.dateTime).getTime());
 
   return (
-    <TableRow>
+    <StyledTableRow>
       <TableCell width="150px">{summary}</TableCell>
       <TableCell align="left">{date}</TableCell>
       <TableCell align="left">{startTime}</TableCell>
@@ -63,7 +64,7 @@ function CalendarEvent(props: TCalendarEventProps) {
           </Typography>
         )}
       </TableCell>
-    </TableRow>
+    </StyledTableRow>
   );
 }
 
