@@ -1,3 +1,5 @@
+import "../public/styles.css";
+
 import { AppProps } from "next/app";
 import { Provider as AuthProvider } from "next-auth/client";
 

@@ -31,7 +31,7 @@ function AccessDenied() {
         variant="outlined"
         color="secondary"
         size="large"
-        onClick={() => signIn("google")}
+        onClick={() => signIn("google", { callbackUrl: "/" })}
       >
         Sign In To Your Google Account
       </Button>

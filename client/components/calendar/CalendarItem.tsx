@@ -2,9 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { TGoogleCalendarItem } from "../../../types/types";
 import {
-  Button,
   Card,
-  CardActions,
   CardContent,
   createStyles,
   makeStyles,
@@ -25,6 +23,9 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: "space-between",
       flexDirection: "column",
       alignItems: "start",
+      "&:hover": {
+        cursor: "pointer",
+      },
     },
   }),
 );
@@ -32,22 +33,24 @@ const useStyles = makeStyles((theme: Theme) =>
 function CalendarItem(props: TCalendarItemProps) {
   const classes = useStyles();
   const {
-    calendarItem: { kind, etag, id, summary, timezone },
+    calendarItem: { kind, etag, id, summary, timezone, backgroundColor },
   } = props;
 
   return (
-    <Card className={classes.root} component={Paper} elevation={5}>
-      <CardContent>
-        <Typography variant="body1">{summary}</Typography>
-      </CardContent>
-      <CardActions>
-        <Link href={`/calendar/${encodeURIComponent(id)}`}>
-          <Button size="small" variant="contained" color="secondary">
-            View This Calendar
-          </Button>
-        </Link>
-      </CardActions>
-    </Card>
+    <Link href={`/calendar/${encodeURIComponent(id)}`}>
+      <Card
+        className={classes.root}
+        style={{
+          background: `linear-gradient(150deg, #fff, ${backgroundColor})`,
+        }}
+        component={Paper}
+        elevation={5}
+      >
+        <CardContent>
+          <Typography variant="body1">{summary}</Typography>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
 

@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core";
+import { createStyles, makeStyles, Theme, Typography } from "@material-ui/core";
 import axios from "axios";
 import Head from "next/head";
 import { useEffect, useState } from "react";
@@ -13,7 +13,10 @@ const useStyles = makeStyles((theme: Theme) =>
       gridTemplateRows: "auto",
       gap: theme.spacing(2),
       marginTop: theme.spacing(5),
-      gridTemplateColumns: "repeat(4, 1fr)",
+      gridTemplateColumns: "repeat(2, 1fr)",
+    },
+    title: {
+      margin: theme.spacing(2),
     },
   }),
 );
@@ -44,6 +47,11 @@ function Home(props: TSessionProps) {
       <Head>
         <title>GC2CSV</title>
       </Head>
+      <div className={classes.title}>
+        <Typography variant="h4" gutterBottom align="center">
+          Your Calendars
+        </Typography>
+      </div>
       <div className={classes.calendarGrid}>
         {fetchError && <h3>{fetchError}</h3>}
         {calendarItems.length > 0 &&

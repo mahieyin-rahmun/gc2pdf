@@ -7,11 +7,13 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+      color: "#fff",
+      background: "grey",
     },
   }),
 );
 
-function Footer() {
+function Footer(props) {
   const classes = useStyles();
 
   return (

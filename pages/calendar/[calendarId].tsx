@@ -9,6 +9,8 @@ import LuxonUtils from "@date-io/luxon";
 import ReactToPrint from "react-to-print";
 import { DateTime } from "luxon";
 import { Button, createStyles, makeStyles, Theme } from "@material-ui/core";
+import Link from "next/link";
+import KeyboardBackspaceRoundedIcon from "@material-ui/icons/KeyboardBackspaceRounded";
 
 type TCalendarEventsProps = TSessionProps & Record<string, any>;
 
@@ -132,6 +134,9 @@ function CalendarEvents(props: TCalendarEventsProps) {
 
   return (
     <div>
+      <Link href="/">
+        <Button startIcon={<KeyboardBackspaceRoundedIcon />}>Go Back</Button>
+      </Link>
       {dateRangeError.length > 0 && <h3>{dateRangeError}</h3>}
       {fetchError.length > 0 && <h3>{fetchError}</h3>}
       <div className={classes.form}>
@@ -160,7 +165,7 @@ function CalendarEvents(props: TCalendarEventsProps) {
           </MuiPickersUtilsProvider>
         </div>
         <Button
-          variant="text"
+          variant="outlined"
           color="secondary"
           onClick={() => fetchGoogleCalendarEvents()}
           disabled={dateRangeError.length > 0 || fetchingCalendarEvents}
