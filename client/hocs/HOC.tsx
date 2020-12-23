@@ -1,5 +1,5 @@
 import { TSessionProps } from "../../types/types";
-import { signIn, signOut, useSession } from "next-auth/client";
+import { useSession } from "next-auth/client";
 import React from "react";
 import Layout from "../components/layout/Layout";
 import AccessDenied from "../components/auth/AccessDenied";
