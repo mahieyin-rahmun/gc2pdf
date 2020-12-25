@@ -3,7 +3,8 @@ import axios, { AxiosInstance } from "axios";
 export default class GoogleCalendarService {
   private URL_MAP = {
     calendarList: "users/me/calendarList",
-    eventsList: (calendarId: string) => `calendars/${calendarId}/events`,
+    eventsList: (calendarId: string) =>
+      `calendars/${encodeURIComponent(calendarId)}/events`,
   };
 
   constructor(private accessToken: string) {}
@@ -26,6 +27,7 @@ export default class GoogleCalendarService {
   }
 
   async listEvents(calendarId: string, timeMin: string, timeMax: string) {
+    console.log(this.URL_MAP.eventsList(calendarId));
     const response = await this.requestBuilder({
       timeMin,
       timeMax,
