@@ -21,9 +21,10 @@ export type TGoogleCalendarItem = {
   foregroundColor: string;
 };
 
-type DateTimeObject = {
+export type DateTimeObject = Partial<{
   dateTime: string;
-};
+  date: string;
+}>;
 
 export type Attendees = {
   email: string;

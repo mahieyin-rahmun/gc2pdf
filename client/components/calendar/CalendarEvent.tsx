@@ -1,11 +1,22 @@
 import { TableCell, TableRow, Typography, Link } from "@material-ui/core";
 import React from "react";
-import { TGoogleCalendarEvent } from "../../../types/types";
+import { DateTimeObject, TGoogleCalendarEvent } from "../../../types/types";
 import Attendees from "./Attendees";
 import StyledTableRow from "./StyledTableRow";
 
 type TCalendarEventProps = {
   calendarEvent: TGoogleCalendarEvent;
+};
+
+const parseDateTimeOrNotApplicable = (
+  dateTime: DateTimeObject,
+  format: Intl.DateTimeFormat,
+) => {
+  return dateTime.dateTime
+    ? format.format(new Date(dateTime.dateTime).getTime())
+    : dateTime.date
+    ? format.format(new Date(dateTime.date).getTime())
+    : "N/A";
 };
 
 const dateFormat = Intl.DateTimeFormat("en-GB", {
@@ -26,22 +37,18 @@ function CalendarEvent(props: TCalendarEventProps) {
     calendarEvent: { attendees, summary, start, end, hangoutLink },
   } = props;
 
-  if (!attendees || !summary || !start || !end || !hangoutLink) {
-    return null;
-  }
-
-  const date = dateFormat.format(new Date(start.dateTime).getTime());
-  const startTime = timeFormat.format(new Date(start.dateTime).getTime());
-  const endTime = timeFormat.format(new Date(end.dateTime).getTime());
+  const date = parseDateTimeOrNotApplicable(start, dateFormat);
+  const startTime = parseDateTimeOrNotApplicable(start, timeFormat);
+  const endTime = parseDateTimeOrNotApplicable(end, timeFormat);
 
   return (
     <StyledTableRow>
       <TableCell width="150px">{summary}</TableCell>
       <TableCell align="left">{date}</TableCell>
-      <TableCell align="left">{startTime}</TableCell>
-      <TableCell align="left">{endTime}</TableCell>
-      <TableCell align="left">
-        <Link href={hangoutLink}>{hangoutLink}</Link>
+      <TableCell align="center">{startTime}</TableCell>
+      <TableCell align="center">{endTime}</TableCell>
+      <TableCell align="center">
+        {hangoutLink ? <Link href={hangoutLink}>{hangoutLink}</Link> : "N/A"}
       </TableCell>
       <TableCell>
         {attendees && attendees.length && attendees.length > 0 ? (
@@ -59,7 +66,7 @@ function CalendarEvent(props: TCalendarEventProps) {
             );
           })
         ) : (
-          <Typography gutterBottom variant="body1">
+          <Typography gutterBottom variant="body1" align="left">
             No attendees found
           </Typography>
         )}
