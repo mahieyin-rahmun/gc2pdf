@@ -8,7 +8,16 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import LuxonUtils from "@date-io/luxon";
 import ReactToPrint from "react-to-print";
 import { DateTime } from "luxon";
-import { Button, createStyles, makeStyles, Theme } from "@material-ui/core";
+import {
+  Button,
+  Checkbox,
+  createStyles,
+  FormControlLabel,
+  makeStyles,
+  TextField,
+  Theme,
+  Typography,
+} from "@material-ui/core";
 import Link from "next/link";
 import KeyboardBackspaceRoundedIcon from "@material-ui/icons/KeyboardBackspaceRounded";
 
@@ -57,8 +66,16 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyItems: "center",
     },
-    button: {
-      marginBottom: theme.spacing(2),
+    eventOptions: {
+      display: "grid",
+      gridTemplateColumns: "1fr 0.5fr 1fr 1fr 1fr",
+      gridTemplateRows: "auto",
+      marginBottom: theme.spacing(3),
+      gap: theme.spacing(3),
+      alignItems: "center",
+    },
+    customTitle: {
+      gridColumn: "4 / -1",
     },
   }),
 );
@@ -74,6 +91,8 @@ function CalendarEvents(props: TCalendarEventsProps) {
 
   const [timeMin, setTimeMin] = useState<Date>(new Date());
   const [timeMax, setTimeMax] = useState<Date>(new Date());
+  const [showCalendarName, setShowCalendarName] = useState<boolean>(true);
+  const [customCalendarName, setCustomCalendarName] = useState<string>("");
   const [dateRangeError, setDateRangeError] = useState<string>("");
   const [fetchError, setFetchError] = useState<string>("");
   const [fetchingCalendarEvents, setFetchingCalendarEvents] = useState<boolean>(
@@ -98,6 +117,12 @@ function CalendarEvents(props: TCalendarEventsProps) {
       setDateRangeError("");
     }
   }, [timeMin, timeMax]);
+
+  useEffect(() => {
+    if (calendarEvents?.summary) {
+      setCustomCalendarName(calendarEvents.summary);
+    }
+  }, [JSON.stringify(calendarEvents)]);
 
   const calendarId = router.query["calendarId"];
 
@@ -141,7 +166,7 @@ function CalendarEvents(props: TCalendarEventsProps) {
       {fetchError.length > 0 && <h3>{fetchError}</h3>}
       <div className={classes.form}>
         <div className={classes.input}>
-          <label htmlFor="timeMin">Starting Date</label>
+          <label htmlFor="timeMin">Starting Date: </label>
           <MuiPickersUtilsProvider utils={LuxonUtils}>
             <DatePicker
               variant="inline"
@@ -153,7 +178,7 @@ function CalendarEvents(props: TCalendarEventsProps) {
           </MuiPickersUtilsProvider>
         </div>
         <div className={classes.input}>
-          <label htmlFor="timeMax">Ending Date</label>
+          <label htmlFor="timeMax">Ending Date: </label>
           <MuiPickersUtilsProvider utils={LuxonUtils}>
             <DatePicker
               variant="inline"
@@ -175,18 +200,47 @@ function CalendarEvents(props: TCalendarEventsProps) {
       </div>
       {calendarEvents && (
         <div className={classes.events}>
-          <ReactToPrint
-            trigger={() => (
-              <Button variant="outlined" className={classes.button}>
-                Generate PDF
-              </Button>
-            )}
-            content={() => tableRef.current}
-          />
+          <div className={classes.eventOptions}>
+            <ReactToPrint
+              trigger={() => (
+                <Button variant="outlined" className={classes.button}>
+                  Generate PDF
+                </Button>
+              )}
+              content={() => tableRef.current}
+            />
+            <Typography variant="body2" gutterBottom>
+              Export Options:
+            </Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showCalendarName}
+                  onChange={(_) =>
+                    setShowCalendarName((showCalendarName) => !showCalendarName)
+                  }
+                  name="checkedA"
+                />
+              }
+              label="Show Calendar Label"
+            />
+            <div className={classes.customTitle}>
+              <TextField
+                label="Custom Calendar Name (used in export)"
+                variant="outlined"
+                value={customCalendarName}
+                onChange={(event) => setCustomCalendarName(event.target.value)}
+                fullWidth
+                style={{ width: "100%" }}
+              />
+            </div>
+          </div>
           <CalendarEventTable
             ref={tableRef}
             calendarEvents={calendarEvents}
             fetchError={fetchError}
+            showCalendarName={showCalendarName}
+            customCalendarName={customCalendarName}
           />
         </div>
       )}

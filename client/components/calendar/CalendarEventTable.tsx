@@ -4,20 +4,24 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TableCell,
   TableBody,
   withStyles,
   WithStyles,
   createStyles,
+  Typography,
 } from "@material-ui/core";
 import React, { PureComponent } from "react";
 import { TGoogleCalendarEvent } from "../../../types/types";
 import CalendarEvent from "./CalendarEvent";
+import Legend from "./Legend";
 import StyledTableCell from "./StyledTableCell";
 
 const styles = createStyles({
   table: {
-    minWidth: 450,
+    minWidth: "100%",
+  },
+  notFound: {
+    marginTop: "16px",
   },
 });
 
@@ -28,44 +32,67 @@ type TCalendarEventTableProps = {
     items: TGoogleCalendarEvent[];
   };
   fetchError: string;
+  showCalendarName: boolean;
+  customCalendarName: string;
 } & WithStyles<typeof styles>;
 
 class CalendarEventTable extends PureComponent<TCalendarEventTableProps, {}> {
   render() {
-    const { classes, calendarEvents, fetchError } = this.props;
+    const {
+      classes,
+      calendarEvents,
+      fetchError,
+      showCalendarName,
+      customCalendarName,
+    } = this.props;
 
     return (
       <div>
-        <TableContainer component={Paper}>
-          <Table
-            className={classes.table}
-            size="small"
-            aria-label="simple table"
-          >
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Title/Summary</StyledTableCell>
-                <StyledTableCell align="left">Date and Day</StyledTableCell>
-                <StyledTableCell align="left">Start Time</StyledTableCell>
-                <StyledTableCell align="left">End Time</StyledTableCell>
-                <StyledTableCell align="left">Google Meet Link</StyledTableCell>
-                <StyledTableCell align="left">Attendees</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {calendarEvents &&
-                fetchError.length === 0 &&
-                calendarEvents.items &&
-                calendarEvents.items.length > 0 &&
-                calendarEvents.items.map((calendarEvent) => (
+        {calendarEvents &&
+        fetchError.length === 0 &&
+        calendarEvents.items &&
+        calendarEvents.items.length > 0 ? (
+          <TableContainer component={Paper}>
+            {showCalendarName && (
+              <Typography variant="h4" align="center" gutterBottom>
+                {customCalendarName || calendarEvents.summary}
+              </Typography>
+            )}
+            <Table
+              className={classes.table}
+              size="small"
+              aria-label="simple table"
+            >
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Title/Summary</StyledTableCell>
+                  <StyledTableCell align="left">Date and Day</StyledTableCell>
+                  <StyledTableCell align="center">Start Time</StyledTableCell>
+                  <StyledTableCell align="center">End Time</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Google Meet Link
+                  </StyledTableCell>
+                  <StyledTableCell align="left">Attendees</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {calendarEvents.items.map((calendarEvent) => (
                   <CalendarEvent
                     calendarEvent={calendarEvent}
                     key={calendarEvent.id}
                   />
                 ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableBody>
+            </Table>
+            <Legend />
+          </TableContainer>
+        ) : (
+          <div className={classes.notFound}>
+            <Typography variant="h4" gutterBottom>
+              No events found for this date range/calendar ID.
+            </Typography>
+          </div>
+        )}
       </div>
     );
   }
