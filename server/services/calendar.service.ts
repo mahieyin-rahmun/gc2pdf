@@ -27,7 +27,6 @@ export default class GoogleCalendarService {
   }
 
   async listEvents(calendarId: string, timeMin: string, timeMax: string) {
-    console.log(this.URL_MAP.eventsList(calendarId));
     const response = await this.requestBuilder({
       timeMin,
       timeMax,
