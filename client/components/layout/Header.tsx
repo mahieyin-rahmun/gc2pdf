@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
       gap: theme.spacing(2),
       gridTemplateColumns: "0.1fr 1fr 0.5fr",
       alignItems: "center",
+      justifyItems: "start",
     },
   }),
 );

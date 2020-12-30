@@ -1,9 +1,6 @@
 import React from "react";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import HelpIcon from "@material-ui/icons/Help";
-import CancelIcon from "@material-ui/icons/Cancel";
-import HourglassEmptyIcon from "@material-ui/icons/HourglassEmpty";
 import { makeStyles, Theme, createStyles, Typography } from "@material-ui/core";
+import { getResponseStatusIcon } from "./Attendees";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,13 +22,13 @@ function Legend() {
 
   return (
     <div className={classes.legend}>
-      <CheckCircleIcon color="action" style={{ color: "green" }} />
+      {getResponseStatusIcon({ responseStatus: "accepted" })}
       <Typography variant="caption">Accepted</Typography>
-      <CancelIcon color="action" style={{ color: "red" }} />
+      {getResponseStatusIcon({ responseStatus: "declined" })}
       <Typography variant="caption">Declined</Typography>
-      <HelpIcon color="action" />
+      {getResponseStatusIcon({ responseStatus: "tentative" })}
       <Typography variant="caption">Maybe</Typography>
-      <HourglassEmptyIcon color="primary" />
+      {getResponseStatusIcon({ responseStatus: "needsAction" })}
       <Typography variant="caption">Hasn't responded yet</Typography>
     </div>
   );

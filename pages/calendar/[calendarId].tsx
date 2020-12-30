@@ -20,6 +20,9 @@ import {
 } from "@material-ui/core";
 import Link from "next/link";
 import KeyboardBackspaceRoundedIcon from "@material-ui/icons/KeyboardBackspaceRounded";
+import TableHeading from "../../client/components/calendar/TableHeading";
+import Skeleton from "@material-ui/lab/Skeleton";
+import AlertComponent from "../../client/components/common/Alert";
 
 type TCalendarEventsProps = TSessionProps & Record<string, any>;
 
@@ -162,8 +165,12 @@ function CalendarEvents(props: TCalendarEventsProps) {
       <Link href="/">
         <Button startIcon={<KeyboardBackspaceRoundedIcon />}>Go Back</Button>
       </Link>
-      {dateRangeError.length > 0 && <h3>{dateRangeError}</h3>}
-      {fetchError.length > 0 && <h3>{fetchError}</h3>}
+      {dateRangeError.length > 0 && (
+        <AlertComponent severity="error">{dateRangeError}</AlertComponent>
+      )}
+      {fetchError.length > 0 && (
+        <AlertComponent severity="error">{fetchError}</AlertComponent>
+      )}
       <div className={classes.form}>
         <div className={classes.input}>
           <label htmlFor="timeMin">Starting Date: </label>
@@ -198,15 +205,17 @@ function CalendarEvents(props: TCalendarEventsProps) {
           Fetch Calendar Events
         </Button>
       </div>
-      {calendarEvents && (
+      {fetchingCalendarEvents &&
+        [...Array(10).keys()].map((key) => (
+          <Skeleton variant="text" width="100%">
+            <TableHeading key={key} />
+          </Skeleton>
+        ))}
+      {!fetchingCalendarEvents && calendarEvents && (
         <div className={classes.events}>
           <div className={classes.eventOptions}>
             <ReactToPrint
-              trigger={() => (
-                <Button variant="outlined" className={classes.button}>
-                  Generate PDF
-                </Button>
-              )}
+              trigger={() => <Button variant="outlined">Generate PDF</Button>}
               content={() => tableRef.current}
             />
             <Typography variant="body2" gutterBottom>
@@ -224,16 +233,20 @@ function CalendarEvents(props: TCalendarEventsProps) {
               }
               label="Show Calendar Label"
             />
-            <div className={classes.customTitle}>
-              <TextField
-                label="Custom Calendar Name (used in export)"
-                variant="outlined"
-                value={customCalendarName}
-                onChange={(event) => setCustomCalendarName(event.target.value)}
-                fullWidth
-                style={{ width: "100%" }}
-              />
-            </div>
+            {showCalendarName && (
+              <div className={classes.customTitle}>
+                <TextField
+                  label="Custom Calendar Name (used in export)"
+                  variant="outlined"
+                  value={customCalendarName}
+                  onChange={(event) =>
+                    setCustomCalendarName(event.target.value)
+                  }
+                  fullWidth
+                  style={{ width: "100%" }}
+                />
+              </div>
+            )}
           </div>
           <CalendarEventTable
             ref={tableRef}

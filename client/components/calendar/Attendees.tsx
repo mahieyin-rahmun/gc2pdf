@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const getResponseStatusIcon = ({
+export const getResponseStatusIcon = ({
   responseStatus,
 }: Pick<TAttendees, "responseStatus">) => {
   switch (responseStatus) {
@@ -31,9 +31,9 @@ const getResponseStatusIcon = ({
     case "declined":
       return <CancelIcon color="action" style={{ color: "red" }} />;
     case "needsAction":
-      return <HourglassEmptyIcon color="action" />;
+      return <HourglassEmptyIcon color="inherit" />;
     case "tentative":
-      return <HelpIcon color="action" />;
+      return <HelpIcon color="primary" />;
   }
 };
 

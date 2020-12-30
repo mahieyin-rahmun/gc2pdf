@@ -41,7 +41,7 @@ function CalendarItem(props: TCalendarItemProps) {
       <Card
         className={classes.root}
         style={{
-          background: `linear-gradient(150deg, #fff, ${backgroundColor})`,
+          background: `linear-gradient(135deg, #fff 90%, ${backgroundColor} 10%)`,
         }}
         component={Paper}
         elevation={5}

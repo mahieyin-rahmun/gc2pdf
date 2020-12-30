@@ -12,6 +12,10 @@ const parseDateTimeOrNotApplicable = (
   dateTime: DateTimeObject,
   format: Intl.DateTimeFormat,
 ) => {
+  if (!dateTime) {
+    return "N/A";
+  }
+
   return dateTime.dateTime
     ? format.format(new Date(dateTime.dateTime).getTime())
     : dateTime.date
@@ -51,7 +55,7 @@ function CalendarEvent(props: TCalendarEventProps) {
         {hangoutLink ? <Link href={hangoutLink}>{hangoutLink}</Link> : "N/A"}
       </TableCell>
       <TableCell>
-        {attendees && attendees.length && attendees.length > 0 ? (
+        {attendees && attendees.length && attendees.length > 1 ? (
           attendees.map((attendants) => {
             if (attendants.self) {
               return null;
@@ -65,9 +69,16 @@ function CalendarEvent(props: TCalendarEventProps) {
               />
             );
           })
+        ) : attendees &&
+          attendees.length &&
+          attendees.length === 1 &&
+          attendees[0].self ? (
+          <Typography gutterBottom variant="body1" align="left">
+            You
+          </Typography>
         ) : (
           <Typography gutterBottom variant="body1" align="left">
-            No attendees found
+            No Attendees found
           </Typography>
         )}
       </TableCell>
