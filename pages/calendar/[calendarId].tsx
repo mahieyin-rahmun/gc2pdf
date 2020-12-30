@@ -7,7 +7,6 @@ import { TGoogleCalendarEvent, TSessionProps } from "../../types/types";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import LuxonUtils from "@date-io/luxon";
 import ReactToPrint from "react-to-print";
-import { DateTime } from "luxon";
 import {
   Button,
   Checkbox,
@@ -23,6 +22,7 @@ import KeyboardBackspaceRoundedIcon from "@material-ui/icons/KeyboardBackspaceRo
 import TableHeading from "../../client/components/calendar/TableHeading";
 import Skeleton from "@material-ui/lab/Skeleton";
 import AlertComponent from "../../client/components/common/Alert";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 
 type TCalendarEventsProps = TSessionProps & Record<string, any>;
 
@@ -129,11 +129,11 @@ function CalendarEvents(props: TCalendarEventsProps) {
 
   const calendarId = router.query["calendarId"];
 
-  const handleMinDateChange = ({ ts }: DateTime) => {
+  const handleMinDateChange = ({ ts }: MaterialUiPickersDate) => {
     setTimeMin(new Date(ts));
   };
 
-  const handleMaxDateChange = ({ ts }: DateTime) => {
+  const handleMaxDateChange = ({ ts }: MaterialUiPickersDate) => {
     setTimeMax(new Date(ts));
   };
 
