@@ -10,6 +10,8 @@ export default async function (
 ) {
   const tokenService = new TokenService(req);
   const jwt = await tokenService.getToken();
+  
+  console.log("JWT: ", jwt);
 
   if (!jwt || !jwt.accessToken) {
     return constructJsonResponse(res, 401, "error", {
