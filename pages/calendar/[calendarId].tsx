@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
@@ -8,16 +9,23 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import LuxonUtils from "@date-io/luxon";
 import ReactToPrint from "react-to-print";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
   Button,
   Checkbox,
+  Chip,
   createStyles,
   FormControlLabel,
+  FormHelperText,
   makeStyles,
   TextField,
   Theme,
   Typography,
 } from "@material-ui/core";
 import Link from "next/link";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import KeyboardBackspaceRoundedIcon from "@material-ui/icons/KeyboardBackspaceRounded";
 import TableHeading from "../../client/components/calendar/TableHeading";
 import Skeleton from "@material-ui/lab/Skeleton";
@@ -80,6 +88,10 @@ const useStyles = makeStyles((theme: Theme) =>
     customTitle: {
       gridColumn: "4 / -1",
     },
+    accordion: {
+      width: "100%",
+      marginBottom: theme.spacing(5),
+    },
   }),
 );
 
@@ -92,7 +104,24 @@ function CalendarEvents(props: TCalendarEventsProps) {
       summary: string;
       items: TGoogleCalendarEvent[];
     }>();
+  const [filteredCalendarEvents, setFilteredCalendarEvents] =
+    useState<{
+      summary: string;
+      items: TGoogleCalendarEvent[];
+    }>();
 
+  // filter states
+  const [titleFilter, setTitleFilter] = useState<string>("");
+  const [excludeAttendeeError, setExcludeAttendeeError] = useState<string>("");
+  const [excludeAttendee, setExcludeAttendee] = useState<string>("");
+  const [excludedAttendees, setExcludedAttendees] = useState<Set<string>>(
+    new Set(),
+  );
+  const [existingAttendees, setExistingAttendees] = useState<Set<string>>(
+    new Set(),
+  );
+
+  // form states
   const [timeMin, setTimeMin] = useState<Date>(new Date());
   const [timeMax, setTimeMax] = useState<Date>(new Date());
   const [showCalendarName, setShowCalendarName] = useState<boolean>(true);
@@ -125,7 +154,56 @@ function CalendarEvents(props: TCalendarEventsProps) {
     if (calendarEvents?.summary) {
       setCustomCalendarName(calendarEvents.summary);
     }
+
+    if (calendarEvents?.items.length > 0) {
+      let listOfAttendees = new Set<string>();
+      calendarEvents.items.forEach((calendarEvent) => {
+        const { attendees } = calendarEvent;
+
+        if (!attendees) {
+          return;
+        }
+
+        const emails = attendees.map((attendee) => attendee.email);
+        emails.forEach((email) => listOfAttendees.add(email));
+      });
+      setExistingAttendees(listOfAttendees);
+    }
   }, [JSON.stringify(calendarEvents)]);
+
+  // filter effect
+  useEffect(() => {
+    if (!calendarEvents) {
+      return;
+    }
+
+    let filtered = cloneDeep(calendarEvents);
+    let filteredEventsArray = filtered?.items;
+
+    if (calendarEvents && titleFilter.length > 0) {
+      filtered.items = filteredEventsArray.filter(
+        ({ summary }) => summary.search(titleFilter) !== -1,
+      );
+    }
+
+    if (calendarEvents && excludedAttendees.size > 0) {
+      excludedAttendees.forEach((excludedEmail) => {
+        filtered.items.forEach((event, eventIndex) => {
+          event.attendees?.forEach((attendee, attendeeIndex) => {
+            if (attendee.email === excludedEmail) {
+              filtered.items[eventIndex].attendees.splice(attendeeIndex, 1);
+            }
+          });
+        });
+      });
+    }
+
+    setFilteredCalendarEvents(filtered);
+  }, [
+    titleFilter,
+    JSON.stringify(Array.from(excludedAttendees)),
+    JSON.stringify(calendarEvents),
+  ]);
 
   const calendarId = router.query["calendarId"];
 
@@ -158,6 +236,65 @@ function CalendarEvents(props: TCalendarEventsProps) {
     } finally {
       setFetchingCalendarEvents(false);
     }
+  };
+
+  const handleTitleFilterChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    setTitleFilter(event.target.value);
+  };
+
+  const handleExcludeAttendeeChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    setExcludeAttendee(event.target.value);
+  };
+
+  const handleAddedToExcludedAttendeesList = (
+    event: React.KeyboardEvent<HTMLDivElement>,
+  ) => {
+    if (event.key === "Enter") {
+      const email = excludeAttendee;
+
+      if (email.length === 0) {
+        setExcludeAttendeeError("No email typed");
+        return;
+      }
+
+      let emailAmongExistingAttendees = existingAttendees.has(email);
+
+      if (!emailAmongExistingAttendees) {
+        setExcludeAttendeeError("Unknown email. Ignoring this filter");
+        return;
+      }
+
+      setExcludedAttendees((previousExcludedAttendees) => {
+        const newExcludedSet = new Set<string>();
+
+        for (let previousExcludedAttendee of previousExcludedAttendees) {
+          newExcludedSet.add(previousExcludedAttendee);
+        }
+
+        newExcludedSet.add(email);
+
+        return newExcludedSet;
+      });
+
+      setExcludeAttendee("");
+      setExcludeAttendeeError("");
+    }
+  };
+
+  const handleExcludedAttendeeDelete = (excludedAttendeeEmail: string) => {
+    setExcludedAttendees((previousExcludedAttendees) => {
+      const excludedAttendeesArray = Array.from(previousExcludedAttendees);
+      const filtered = excludedAttendeesArray.filter(
+        (email) => email !== excludedAttendeeEmail,
+      );
+      const newExcludedAttendeesSet = new Set<string>();
+      filtered.forEach((email) => newExcludedAttendeesSet.add(email));
+      return newExcludedAttendeesSet;
+    });
   };
 
   return (
@@ -248,9 +385,57 @@ function CalendarEvents(props: TCalendarEventsProps) {
               </div>
             )}
           </div>
+          <Accordion className={classes.accordion}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h6" gutterBottom>
+                Filters
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails className={classes.accordion}>
+              <div style={{ width: "95%" }}>
+                <Box mb={2}>
+                  <TextField
+                    name="titleFilter"
+                    label="Title/Summary Filter"
+                    variant="outlined"
+                    fullWidth
+                    onChange={handleTitleFilterChange}
+                  />
+                </Box>
+                <TextField
+                  error={!!excludeAttendeeError}
+                  name="attendeesFilter"
+                  label="Exclude one or multiple attendees' email from the PDF (type email and press Enter)"
+                  variant="outlined"
+                  fullWidth
+                  value={excludeAttendee}
+                  onKeyPress={handleAddedToExcludedAttendeesList}
+                  onChange={handleExcludeAttendeeChange}
+                />
+                <FormHelperText error={!!excludeAttendeeError}>
+                  {excludeAttendeeError}
+                </FormHelperText>
+                <Box display="flex" mt={2} mb={2}>
+                  {excludedAttendees.size > 0 &&
+                    Array.from(excludedAttendees).map((excludedAttendee) => (
+                      <Chip
+                        label={excludedAttendee}
+                        key={JSON.stringfy(excludeAttendee)}
+                        onDelete={() =>
+                          handleExcludedAttendeeDelete(excludedAttendee)
+                        }
+                        color="secondary"
+                        style={{ marginRight: "4px", marginLeft: "4px" }}
+                      />
+                    ))}
+                </Box>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+
           <CalendarEventTable
             ref={tableRef}
-            calendarEvents={calendarEvents}
+            calendarEvents={filteredCalendarEvents || calendarEvents}
             fetchError={fetchError}
             showCalendarName={showCalendarName}
             customCalendarName={customCalendarName}
