@@ -19,6 +19,12 @@ handler.use(checkAuth).get(async (req, res) => {
     timeMax,
   );
 
+  if (eventsList === null) {
+    return constructJsonResponse(res, 400, "error", {
+      message: "Please try again in a few minutes",
+    });
+  }
+
   return constructJsonResponse(res, 200, "success", eventsList);
 });
 
