@@ -87,10 +87,11 @@ function CalendarEvents(props: TCalendarEventsProps) {
   const router = useRouter();
   const classes = useStyles();
   const tableRef = useRef();
-  const [calendarEvents, setCalendarEvents] = useState<{
-    summary: string;
-    items: TGoogleCalendarEvent[];
-  }>();
+  const [calendarEvents, setCalendarEvents] =
+    useState<{
+      summary: string;
+      items: TGoogleCalendarEvent[];
+    }>();
 
   const [timeMin, setTimeMin] = useState<Date>(new Date());
   const [timeMax, setTimeMax] = useState<Date>(new Date());
@@ -98,9 +99,8 @@ function CalendarEvents(props: TCalendarEventsProps) {
   const [customCalendarName, setCustomCalendarName] = useState<string>("");
   const [dateRangeError, setDateRangeError] = useState<string>("");
   const [fetchError, setFetchError] = useState<string>("");
-  const [fetchingCalendarEvents, setFetchingCalendarEvents] = useState<boolean>(
-    false,
-  );
+  const [fetchingCalendarEvents, setFetchingCalendarEvents] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const currentDate = timeMax;
