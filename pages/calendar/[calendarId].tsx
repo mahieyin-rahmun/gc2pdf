@@ -420,7 +420,7 @@ function CalendarEvents(props: TCalendarEventsProps) {
                     Array.from(excludedAttendees).map((excludedAttendee) => (
                       <Chip
                         label={excludedAttendee}
-                        key={JSON.stringfy(excludeAttendee)}
+                        key={JSON.stringify(excludeAttendee)}
                         onDelete={() =>
                           handleExcludedAttendeeDelete(excludedAttendee)
                         }
